@@ -1,0 +1,10 @@
+{
+  "name": "job-application-agent",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node agent.cjs",
+    "test": "node --test tests/*.test.cjs"
+  },
+  "dependencies": { "playwright": "^1.58.0" }
+}

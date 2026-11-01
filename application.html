@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>模拟校园招聘 · 网申填写实验</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f6fb; color: #18243b; font: 16px/1.6 system-ui, sans-serif; }
+    main { max-width: 760px; margin: 40px auto; padding: 32px; background: white; border-radius: 18px; box-shadow: 0 12px 40px #23395b10; }
+    .tag { color: #315bd5; font-weight: 600; font-size: 14px; }
+    h1 { margin: 8px 0; font-size: 28px; }
+    p { color: #59677d; }
+    .notice { padding: 12px 16px; background: #eef3ff; border-radius: 8px; }
+    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0; }
+    label { display: block; font-weight: 600; }
+    input, select { display: block; width: 100%; margin-top: 6px; padding: 11px 12px; border: 1px solid #b7c2d4; border-radius: 8px; background: white; color: #18243b; font: inherit; }
+    input:focus, select:focus { outline: 3px solid #dce6ff; border-color: #315bd5; }
+    button { padding: 11px 20px; border: 0; border-radius: 8px; background: #315bd5; color: white; font: inherit; cursor: pointer; }
+    #feedback { margin-top: 16px; }
+    @media (max-width: 600px) { main { margin: 16px; padding: 24px; } .fields { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="tag">SANDBOX · 第一版实验</div>
+    <h1>模拟校园招聘申请表</h1>
+    <p>请填写基本资料和教育信息。</p>
+    <p class="notice">本页面仅供本地测试。检查按钮只验证表单，不发送或保存个人资料。</p>
+    <form id="application-form">
+      <div class="fields">
+        <label for="field-a">姓名<input id="field-a" name="applicant" type="text" required></label>
+        <label for="field-b">手机号<input id="field-b" name="mobile" type="tel" pattern="[0-9]{11}" required></label>
+        <label for="field-c">邮箱<input id="field-c" name="contact-email" type="email" required></label>
+        <label for="field-d">毕业院校<input id="field-d" name="institution" type="text" required></label>
+        <label for="field-e">专业<input id="field-e" name="study-area" type="text" required></label>
+        <label for="field-f">最高学历<select id="field-f" name="education-level" required>
+          <option value="">请选择</option><option value="college">大专</option><option value="bachelor">本科</option><option value="master">硕士</option><option value="doctor">博士</option>
+        </select></label>
+        <label for="field-g">毕业时间<input id="field-g" name="completion-month" type="month" required></label>
+      </div>
+      <button type="button" id="check-button">检查填写</button>
+      <div id="feedback" role="status" aria-live="polite"></div>
+    </form>
+  </main>
+  <script>
+    const form = document.getElementById('application-form');
+    form.addEventListener('submit', event => event.preventDefault());
+    document.getElementById('check-button').addEventListener('click', () => {
+      document.getElementById('feedback').textContent = form.reportValidity()
+        ? '表单格式检查通过。请对照个人档案确认内容正确；资料未提交。'
+        : '请补全字段或修正格式后再检查。';
+    });
+  </script>
+</body>
+</html>

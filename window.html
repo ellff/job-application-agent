@@ -1,0 +1,43 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>网申辅助填写</title>
+<style>
+[hidden]{display:none!important}
+*{box-sizing:border-box}body{font:15px system-ui,"Microsoft YaHei",sans-serif;background:#f3f5f8;color:#233047;margin:0;padding:14px}main{max-width:900px;margin:auto;background:white;padding:18px;border-radius:14px}h1{font-size:24px;margin:0 0 8px}p{color:#536277;line-height:1.5;margin:8px 0}label{display:block;margin:7px 0}input[type=text],select{width:100%;padding:7px;border:1px solid #b9c4d2;border-radius:6px;font:inherit}fieldset{border:0;padding:0;display:flex;gap:22px}button{font:inherit;border:0;border-radius:6px;padding:8px 13px;margin:5px 6px 5px 0;background:#215ac5;color:white;cursor:pointer}button:disabled{background:#c6cedb;cursor:default}button.secondary{background:#52647c}textarea{width:100%;height:180px;resize:vertical;font:14px/1.7 monospace;padding:12px;border:1px solid #b9c4d2;border-radius:6px}#state{font-weight:600}small{color:#68758a}
+</style><main>
+<h1>网申辅助填写</h1><p>打开网页 → 登录 → 识别 → 确认填写</p>
+<label>初始网址<input id="url" type="text" placeholder="https://…"></label>
+<fieldset><label><input type="radio" name="mode" value="rules" checked> 规则填写</label><label><input type="radio" name="mode" value="assist"> 模型辅助填写</label></fieldset>
+<details id="settings"><summary>设置</summary><label>档案路径<input id="profile" type="text" value=".local/personal-profile.json"></label><small>模型辅助使用本地 Ollama / qwen3:4b 匹配下拉选项，匹配后直接填写。已有内容保留，不自动保存或投递。</small></details>
+<div><button id="open">打开网页</button></div>
+<label id="tabs" hidden>目标标签页<select id="pages"></select></label>
+<div><button id="scan">识别当前页</button><button id="fill" disabled>确认填写</button><button id="exit" class="secondary">退出</button></div>
+<p id="state" role="status">正在连接…</p>
+<label>填写计划与结果<textarea id="log" readonly aria-label="填写计划与结果"></textarea></label>
+</main><script>
+const token='__TOKEN__';const initialUrl=__DEFAULT_URL__;
+const $=id=>document.getElementById(id);let blocked=true;
+$('url').value=initialUrl;
+for(const key of ['url','profile']){try{const v=localStorage.getItem('fill-'+key);if(v)$(key).value=v;}catch{}}
+async function request(route,data){const response=await fetch(route,{method:data===undefined?'GET':'POST',headers:{'X-Session-Token':token,'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data)});const result=await response.json();if(!response.ok)throw Error(result.error||'请求失败');return result;}
+function render(s){
+ const select=$('pages'),selected=select.value;
+ const signature=JSON.stringify(s.pages);if(select.dataset.signature!==signature){select.replaceChildren(...s.pages.map(p=>new Option(p.label,p.id)));select.dataset.signature=signature;if(s.pages.some(p=>p.id===selected))select.value=selected;else blocked=true;}
+ $('tabs').hidden=s.pages.length<2;
+ for(const id of ['open','scan','url','profile','pages'])$(id).disabled=s.busy;
+ document.querySelectorAll('[name=mode]').forEach(el=>el.disabled=s.busy);
+ $('scan').disabled=s.busy||!select.value;
+ $('fill').disabled=s.busy||!s.canFill||blocked;
+ $('state').textContent=s.busy?'处理中…':s.canFill&&!blocked?'请核对后确认填写':'就绪';
+ const log=$('log'),nearBottom=log.scrollTop+log.clientHeight>=log.scrollHeight-35;
+ const text=s.logs.join('\n');if(log.value!==text){log.value=text;if(nearBottom)log.scrollTop=log.scrollHeight;}
+}
+let polling=false;async function poll(){if(polling)return;polling=true;try{render(await request('/status'));}catch{$('state').textContent='窗口服务已停止，请重新启动';$('fill').disabled=true;}finally{polling=false;}}
+async function act(route,data){try{await request(route,data);await poll();}catch(e){$('state').textContent=e.message;}}
+async function invalidate(){blocked=true;$('fill').disabled=true;await act('/invalidate',{});}
+for(const key of ['profile','url'])$(key).addEventListener('input',()=>{try{localStorage.setItem('fill-'+key,$(key).value);}catch{}invalidate();});
+$('pages').onchange=invalidate;document.querySelectorAll('[name=mode]').forEach(el=>el.onchange=invalidate);
+$('open').onclick=()=>{blocked=true;act('/open',{url:$('url').value.trim()});};
+$('scan').onclick=()=>{blocked=false;act('/scan',{pageId:$('pages').value,mode:document.querySelector('[name=mode]:checked').value,profileFile:$('profile').value.trim()});};
+$('fill').onclick=()=>{blocked=true;$('fill').disabled=true;act('/fill',{});};
+$('exit').onclick=()=>act('/exit',{});
+setInterval(poll,500);poll();
+</script></html>
