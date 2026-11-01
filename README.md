@@ -23,8 +23,6 @@
 - Node.js、CommonJS、PowerShell、Playwright、JSON 与 Markdown Skill。
 - 本地适配：Ollama / qwen3:4b。
 - 云端适配：SiliconFlow，默认 Qwen/Qwen3.5-4B；另有 OpenAI 和集团接口适配，真实运行效果分别验证。
-- NVIDIA SDK及模型：当前未直接集成。Ollama可能使用GPU不等于项目集成了某个NVIDIA SDK。
-- StepFun阶跃星辰：当前未接入。
 
 ## 启动
 
@@ -40,23 +38,6 @@ npx playwright install chromium
 
 默认是本地规则实验。历史记录中的模型新表达表单15/15、异常场景3/3不代表当前版本已重新通过；交付前按验证清单重跑。模拟接口测试不证明真实模型准确率，本地测试通过也不证明所有招聘网站兼容。
 
-## 文档
-
-- [部署说明](docs/DEPLOYMENT.md)
-- [技能文件](skills/job-application-fill/SKILL.md)
-- [搭建实验报告框架](docs/BUILD_REPORT.md)
-- [验证材料及录屏清单](docs/VALIDATION.md)
-- [真实页面详细操作](TRY-ZHAOPIN.md)
-
-公开前移除密钥、登录凭证和真实个人资料。程序不会点击保存或投递，但网站可能在输入时自动保存。演示优先使用虚构档案和本地页面。
-
-## 提交与会议材料（2026-11-01）
-
-- [今晚会议清单与六项提交对照](docs/MEETING-2026-11-01.md)
-- [实验过程及本次37项回归记录](docs/BUILD_REPORT.md)
-- [三分钟视频脚本](DEMO.md)
-
-本次使用Edge通道完成37项测试，全部通过；模型接口模拟测试不等于真实推理评测。公开仓库URL、模型性能实测和视频成片仍待完成。
 
 ## 首次准备个人档案
 
