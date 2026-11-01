@@ -46,16 +46,6 @@ npx playwright install chromium
 - [验证材料及录屏清单](docs/VALIDATION.md)
 - [真实页面详细操作](docs/TRY-ZHAOPIN.md)
 
-公开前移除密钥、登录凭证和真实个人资料。程序不会点击保存或投递，但网站可能在输入时自动保存。演示优先使用虚构档案和本地页面。
-
-## 提交与会议材料（2026-11-01）
-
-- [今晚会议清单与六项提交对照](docs/MEETING-2026-11-01.md)
-- [实验过程及本次37项回归记录](docs/BUILD_REPORT.md)
-- [三分钟视频脚本](docs/DEMO.md)
-
-本次使用Edge通道完成37项测试，全部通过；模型接口模拟测试不等于真实推理评测。公开仓库URL、模型性能实测和视频成片仍待完成。
-
 ## 首次准备个人档案
 
 仓库中的 profile.json 是虚构示例，不用于正式投递。窗口默认读取 .local/personal-profile.json，先执行：
