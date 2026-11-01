@@ -33,11 +33,28 @@ Windows PowerShell，在项目目录运行：
 ```powershell
 npm install
 npx playwright install chromium
-.\start.ps1
+.\scripts\start.ps1
 ```
 
 默认是本地规则实验。历史记录中的模型新表达表单15/15、异常场景3/3不代表当前版本已重新通过；交付前按验证清单重跑。模拟接口测试不证明真实模型准确率，本地测试通过也不证明所有招聘网站兼容。
 
+## 文档
+
+- [部署说明](docs/DEPLOYMENT.md)
+- [技能文件](skills/job-application-fill/SKILL.md)
+- [搭建实验报告框架](docs/BUILD_REPORT.md)
+- [验证材料及录屏清单](docs/VALIDATION.md)
+- [真实页面详细操作](docs/TRY-ZHAOPIN.md)
+
+公开前移除密钥、登录凭证和真实个人资料。程序不会点击保存或投递，但网站可能在输入时自动保存。演示优先使用虚构档案和本地页面。
+
+## 提交与会议材料（2026-11-01）
+
+- [今晚会议清单与六项提交对照](docs/MEETING-2026-11-01.md)
+- [实验过程及本次37项回归记录](docs/BUILD_REPORT.md)
+- [三分钟视频脚本](docs/DEMO.md)
+
+本次使用Edge通道完成37项测试，全部通过；模型接口模拟测试不等于真实推理评测。公开仓库URL、模型性能实测和视频成片仍待完成。
 
 ## 首次准备个人档案
 
@@ -45,7 +62,26 @@ npx playwright install chromium
 
 ```powershell
 New-Item -ItemType Directory -Force .local
-Copy-Item profile.json .local/personal-profile.json
+Copy-Item examples/profile.json .local/personal-profile.json
 ```
 
 再在本机编辑该文件，填写自己的真实资料；不要将该文件上传。也可以在窗口设置中指定其他档案路径。
+
+## 项目目录
+
+```text
+├── README.md           项目介绍与使用说明
+├── package.json        依赖与npm命令
+├── launch-fill.cmd     Windows双击启动入口
+├── src/                智能体、浏览器控制、模型适配与评测源码
+├── public/             控制窗口界面
+├── config/             标准字段映射
+├── examples/           虚构档案、本地测试表单及演示页面
+├── scripts/            Windows启动与可选诊断脚本
+├── skills/             Agent Skill Markdown
+├── tests/              自动化回归测试
+├── evaluation/         异常场景评测
+└── docs/               部署、实验报告、视频脚本及提交材料
+```
+
+日常使用只需双击 `launch-fill.cmd`。`scripts/start-window.ps1` 是它调用的启动脚本；其余PowerShell脚本用于旧终端流程或可选模型诊断，不需要全部运行。跨平台可在安装依赖后运行 `npm start`。本地规则实验使用 `npm run sandbox`，回归测试使用 `npm test`。
